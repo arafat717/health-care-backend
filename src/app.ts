@@ -15,6 +15,8 @@ import { AuthRoutes } from "./app/module/auth/auth.route";
 import { radisClient } from "./app/lib/radisConection";
 import crypto from "crypto";
 import { userRoute } from "./app/module/user/user.route";
+import { getBkashIdToken } from "./app/lib/bkash";
+import { appointmentRouter } from "./app/module/appointment/appointment.route";
 
 const app: Application = express();
 
@@ -34,24 +36,16 @@ app.use(cookieParser());
 
 app.use("/api/v1/auth", AuthRoutes);
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/appointment", appointmentRouter);
 
 app.get("/test", async (req: Request, res: Response) => {
   try {
-    // await radisClient.set(
-    //   "forgot-password-otp:arafatjibon@gmail.com",
-    //   "123456",
-    //   {
-    //     expiration: {
-    //       type: "EX",
-    //       value: 60,
-    //     },
-    //   },
-    // );
-    const otp = crypto.randomInt(10000, 100000);
+    const result = await getBkashIdToken();
+    console.log("bkash==>", result);
     res.status(httpStatus.OK).json({
       success: true,
-      message: "Otp sent successfully!",
-      data: otp,
+      message: "bkash thing here!",
+      data: null,
     });
   } catch (error) {
     console.log(error);
